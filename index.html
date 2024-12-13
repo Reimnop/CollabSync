@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folder Upload Example</title>
+    <style type="text/css">
+        @import "https://thevoidunknown.github.io/CollabSync/alpha-ui.css";
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="background">
+    <div id="upload-container">
+        <input type="file" class="button" id="folder-upload" webkitdirectory multiple />
+        <div id="file-list" class="list-container"></div>
+    </div>
+    <script>
+        // Global array to hold the uploaded levels data
+        const levelsData = [];
+        document.getElementById('folder-upload').addEventListener('change', handleFolderUpload);
+        
+        async function handleFolderUpload(event) {
+            const files = event.target.files;
+            const folderData = {};
+
+            folderData.combineOptions = {
+              objects: true,
+              parallaxObjects: false,
+              prefabs: true,
+              unpackedPrefabs: true,
+              markers: true,
+              checkpoints: true,
+              themes: true,
+              events: true,
+              triggers: true
+            }
+
+            for (const file of files) {
+                const fileName = file.name;
+                if (fileName === 'level.vgd') {
+                    await readFileAsText(file).then(content => {
+                      folderData.level = JSON.parse(content);
+                      console.log(folderData)
+                    });
+                } else if (fileName === 'metadata.vgm') {
+                    await readFileAsText(file).then(content => {
+                      folderData.metadata = JSON.parse(content);
+                    });
+                } else if (fileName === 'cover.jpg') {
+                    await readFileAsDataURL(file).then(base64 => {
+                      folderData.cover = base64;
+                    });
+                }
+            }
+
+            checkAndAddToLevelsData(folderData);
+        }
+
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function checkAndAddToLevelsData(folderData) {
+            if (folderData.level && folderData.metadata && folderData.cover) {
+                levelsData.push(folderData);
+                updateFileList();
+            }
+        }
+
+        function updateFileList() {
+            const fileList = $('#file-list');
+            fileList.empty();
+
+            levelsData.forEach((data, index) => {
+              const levelObjects = countObjects(data.level);
+
+              const removeButton = `
+                  <button class="button clickable red" onclick="removeUpload(${index})">Remove</button>
+              `;
+              const listItem = `
+                  <div class="list-item">
+                      <div class="list-item w-full">
+                        <div class="list-item">
+                          <div class="text yellow">Level ${index + 1} (${data.metadata.creator.steam_name})</div>
+                          <br/>
+                          <div class="text gray object-count">${levelObjects.objects}</div>
+                          <div class="text gray object-count">${levelObjects.parallaxObjects}</div>
+                          <div class="text gray object-count">${levelObjects.prefabs}</div>
+                          <div class="text gray object-count">${levelObjects.unpackedPrefabs}</div>
+                          <div class="text gray object-count">${levelObjects.markers}</div>
+                          <div class="text gray object-count">${levelObjects.checkpoints}</div>
+                          <div class="text gray object-count">${levelObjects.themes}</div>
+                          <div class="text gray object-count">${levelObjects.events}</div>
+                          <div class="text gray object-count">${levelObjects.triggers}</div>
+                        </div>
+                        ${removeButton}
+                      </div>
+                  </div>
+              `;
+              fileList.append(listItem);
+            });
+        }
+
+        function countObjects(level) {
+          const data = {
+            objects: 0,
+            parallaxObjects: 0,
+            prefabs: 0,
+            unpackedPrefabs: 0,
+            markers: 0,
+            checkpoints: 0,
+            themes: 0,
+            events: 0,
+            triggers: 0
+          }
+
+          if (level.objects) {
+            data.objects += level.objects.length ?? 0;
+          };
+
+          if (level.parallax_settings) {
+            level.parallax_settings.l.forEach((object, index) => {
+              if (object.o) {
+                data.parallaxObjects += object.o.length ?? 0;
+              }
+            })
+          }
+
+          if (level.prefabs) {
+            data.prefabs += level.prefabs.length ?? 0;
+          };
+
+          if (level.prefab_objects) {
+            data.unpackedPrefabs += level.prefab_objects.length ?? 0;
+          }
+
+          if (level.markers) {
+            data.markers += level.markers.length ?? 0;
+          }
+
+          if (level.checkpoints) {
+            data.checkpoints += level.checkpoints.length ?? 0;
+          }
+
+          if (level.themes) {
+            data.themes += level.themes.length ?? 0;
+          }
+
+          if (level.events) {
+            for (let x = 0; x < level.events.length; x++) {
+                data.events += level.events[x].length ?? 0;
+            }
+          }
+
+          if (level.triggers) {
+            data.triggers += level.triggers.length ?? 0;
+          }
+
+          return data;
+        }
+
+        function removeUpload(index) {
+            levelsData.splice(index, 1);
+            updateFileList();
+        }
+    </script>
+</body>
+</html>
