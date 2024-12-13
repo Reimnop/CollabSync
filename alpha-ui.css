@@ -89,6 +89,13 @@
     cursor: default;
   }
 
+  .text-big {
+    align-items: center;
+    cursor: default;
+    font-weight: bolder;
+    font-style: bold;
+  }
+
   .list-container {
     display: flex;
     justify-content: flex-start;
@@ -98,11 +105,21 @@
 
   .list-item {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
     justify-content: space-between;
     gap: 4px;
-    background: #383838;
+    background-color: #383838;
     align-items: center;
+  }
+
+  .list-item-col {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px;
+    background-color: #383838;
+    align-items: flex-start;
   }
 
   .flex-end {
@@ -418,4 +435,11 @@
   
   .theme-selector-div {
     transition: 0.4s all;
+  }
+
+  .icon-objects {
+    background-image: url("https://thevoidunknown.github.io/CollabSync/icons/icon-objects.png") !important;
+    background-size: 99% !important;
+    background-position: center !important;
+    background-repeat: no-repeat;
   }

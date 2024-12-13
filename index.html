@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CollabSync</title>
-    <style type="text/css">
+    <!--<style type="text/css">
         @import "https://thevoidunknown.github.io/CollabSync/alpha-ui.css";
+    </style>-->
+    <style type="text/css">
+        @import "file:///home/voidunknown/Desktop/CollabSync/alpha-ui.css";
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -41,7 +44,6 @@
                 if (fileName === 'level.vgd') {
                     await readFileAsText(file).then(content => {
                       folderData.level = JSON.parse(content);
-                      console.log(folderData)
                     });
                 } else if (fileName === 'metadata.vgm') {
                     await readFileAsText(file).then(content => {
@@ -93,7 +95,7 @@
                   <button class="button clickable red" onclick="removeUpload(${index})">Remove</button>
               `;
               const listItem = `
-                  <div class="list-item">
+                  <div class="list-item-col">
                       <div class="list-item w-full">
                         <div class="list-item">
                           <div class="text yellow">Level ${index + 1} (${data.metadata.creator.steam_name})</div>
@@ -109,6 +111,17 @@
                           <div class="text gray object-count">${levelObjects.triggers}</div>
                         </div>
                         ${removeButton}
+                      </div>
+                      <br/>
+
+                      <div class="list-item w-full">
+                        <div class="text-big">Combiner options</div>
+                        <div class="list-item w-full">
+                          <div class="list-item">
+                            <div class="text-big blue clickable">Objects</div>
+                            <div class="text-big jsab clickable">Parallax</div>
+                          </div>
+                        </div>
                       </div>
                   </div>
               `;
