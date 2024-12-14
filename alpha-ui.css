@@ -8,6 +8,10 @@
     font-weight: 600;
   }
 
+  .hidden {
+    display: none;
+  }
+
   .max-w {
     width: 100%;
   }
@@ -44,10 +48,6 @@
   .yellow {
     background-color: #ffd000;
     color: #19191a !important;
-  }
-
-  .button:hover {
-    background: #2a2a2a;
   }
 
   .white.clickable:hover {
