@@ -4,13 +4,25 @@
     font-family: Noto Sans;
     color: #f8f8f8;
     border-radius: 4px;
-    padding: 4px;
     font-size: 100%;
     font-weight: 600;
+  }
+
+  .max-w {
+    width: 100%;
+  }
+
+  .max-h {
+    height: 100%;
   }
   
   .background {
     background: #212121;
+  }
+
+  .white {
+    background-color: #e1e1e1;
+    color: #19191a !important;
   }
 
   .gray {
@@ -38,12 +50,16 @@
     background: #2a2a2a;
   }
 
+  .white.clickable:hover {
+    background-color: #cecece;
+  }
+
   .gray.clickable:hover {
-    background: #6a6a6a;
+    background-color: #6a6a6a;
   }
 
   .blue.clickable:hover {
-    background: #19baf4;
+    background-color: #19baf4;
   }
 
   .jsab.clickable:hover {
@@ -60,6 +76,17 @@
 
   .clickable {
     cursor: pointer;
+  }
+
+  .toggleable {
+    background-color: #2a2a2a;
+    color: #6a6a6a;
+  }
+
+  .toggleable.focused {
+    background-color: #19baf4;
+    color: #ffffff;
+    border: none !important;
   }
   
   .background-accent {
@@ -81,26 +108,58 @@
   }
 
   .object-count {
-    width: 64px;
+    min-width: 48px;
+  }
+
+  .text-small {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    font-size: 50%;
+    cursor: default;
+    gap: 4px;
+    padding: 4px;
   }
 
   .text {
+    display: flex;
+    flex-flow: row wrap;
     align-items: center;
+    font-size: 80%;
     cursor: default;
+    gap: 4px;
+    padding: 4px;
   }
 
   .text-big {
+    display: flex;
+    flex-flow: row wrap;
     align-items: center;
     cursor: default;
     font-weight: bolder;
     font-style: bold;
+    font-size: 100%;
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .header {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    cursor: default;
+    font-weight: 900;
+    font-size: 250%;
+    font-style: bold;
+    gap: 4px;
+    padding: 4px;
   }
 
   .list-container {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
   }
 
   .list-item {
@@ -108,18 +167,34 @@
     flex-flow: row wrap;
     justify-content: space-between;
     gap: 4px;
-    background-color: #383838;
+    align-items: center;
+  }
+
+  .list-item-start {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    gap: 4px;
     align-items: center;
   }
 
   .list-item-col {
     display: flex;
     flex-flow: column wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 8px;
     padding: 4px;
     background-color: #383838;
     align-items: flex-start;
+    flex-grow: 1;
+  }
+
+  .flex-row {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    gap: 4px;
+    align-items: center;
   }
 
   .flex-end {
@@ -381,6 +456,7 @@
   }
 
   .generic-text {
+    padding: 4px;
     color: #212121;
     font-weight: 400;
     height: 20px;
@@ -442,4 +518,90 @@
     background-size: 99% !important;
     background-position: center !important;
     background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon-parallax {
+    background-image: url("https://thevoidunknown.github.io/CollabSync/icons/icon-parallax.png") !important;
+    background-size: 99% !important;
+    background-position: center !important;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon-prefabs {
+    background-image: url("https://thevoidunknown.github.io/CollabSync/icons/icon-prefabs.png") !important;
+    background-size: 99% !important;
+    background-position: center !important;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon-unpacked_prefabs {
+    background-image: url("https://thevoidunknown.github.io/CollabSync/icons/icon-unpacked_prefabs.png") !important;
+    background-size: 99% !important;
+    background-position: center !important;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon-markers {
+    background-image: url("https://thevoidunknown.github.io/CollabSync/icons/icon-markers.png") !important;
+    background-size: 99% !important;
+    background-position: center !important;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon-checkpoints {
+    background-image: url("https://thevoidunknown.github.io/CollabSync/icons/icon-checkpoints.png") !important;
+    background-size: 99% !important;
+    background-position: center !important;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon-themes {
+    background-image: url("https://thevoidunknown.github.io/CollabSync/icons/editor_gui_dropper.png") !important;
+    background-size: 99% !important;
+    background-position: center !important;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon-events {
+    background-image: url("https://thevoidunknown.github.io/CollabSync/icons/icon-events.png") !important;
+    background-size: 99% !important;
+    background-position: center !important;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon-triggers {
+    background-image: url("https://thevoidunknown.github.io/CollabSync/icons/icon-triggers.png") !important;
+    background-size: 99% !important;
+    background-position: center !important;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .color-swatch {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #d0d0d0;
+    border-radius: 4px;
+  }
+
+  .timeline-bar {
+    height: 20px;
+    position: relative;
   }
