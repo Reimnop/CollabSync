@@ -1,3 +1,434 @@
+const version = 1
+const metadataObjectID = "CSMETADATA"
+const header = "ȻȘ"
+const headerRegex = /ȻȘ-\d+_/g
+const headerIndexRegex = /(?<=ȻȘ-)\d+(?=_)/g
+
+function findMetadata(level) {
+    let metadata = null;
+
+    level.objects.forEach((object) => {
+        if (object.id === metadataObjectID) {
+            try { 
+                metadata = JSON.parse(object.text);
+                return;
+            } catch (oops) { console.error(`Malformed metadata found: ${object.text}`); }
+        }
+    })
+
+    if (metadata) {
+        return metadata;
+    } else {
+        return false;
+    }
+}
+
+function deleteMetadataObject(level) {
+    level.objects.forEach((object, i) => {
+        if (object.id == metadataObjectID) {
+            level.objects[i].splice(i, 1);
+        }
+    })
+}
+
+function untagLevels(inputData) {
+    let levelsData = inputData;
+
+    levelsData.forEach((data) => {
+        data.level.objects = untagObjects(data.level.objects, headerRegex);
+        data.level.prefabs = untagPrefabs(data.level.prefabs, headerRegex);
+        data.level.prefab_objects = untagPrefabObjects(data.level.prefab_objects, headerRegex);
+        data.level.markers = untagMarkers(data.level.markers, headerRegex);
+        data.level.checkpoints = untagCheckpoints(data.level.checkpoints, headerRegex);
+        data.level.themes = untagThemes(data.level.themes, headerRegex);
+    })
+
+    return levelsData;
+}
+
+function tagObjects(objects, header, index) {
+    if (!objects) { return []; }
+    objects.forEach((object) => {
+        object.id = `${header}-${index}_${object.id}`;
+        if (object.p_id) { object.p_id = `${header}-${index}_${object.p_id}`; }
+    })
+    return objects;
+}
+
+function tagPrefabs(prefabs, header, index) {
+    if (!prefabs) { return []; }
+    prefabs.forEach((prefab) => {
+        prefab.id = `${header}-${index}_${prefab.id}`;
+        if (!prefab.objs) { return; }
+        prefab.objs = tagObjects(prefab.objs, header, index);
+    })
+    return prefabs;
+}
+
+function tagPrefabObjects(prefabObjects, header, index) {
+    if (!prefabObjects) { return []; }
+    prefabObjects.forEach((prefabObject) => {
+        prefabObject.id = `${header}-${index}_${prefabObject.id}`;
+        if (prefabObject.p_id) { prefabObject.p_id = `${header}-${index}_${prefabObject.p_id}`; }
+    })
+    return prefabObjects;
+}
+
+function tagMarkers(markers, header, index) {
+    if (!markers) { return []; }
+    markers.forEach((marker) => {
+        marker.ID = `${header}-${index}_${marker.ID}`;
+    })
+    return markers;
+}
+
+function tagCheckpoints(checkpoints, header, index) {
+    if (!checkpoints) { return []; }
+    checkpoints.forEach((checkpoint) => {
+        checkpoint.ID = `${header}-${index}_${checkpoint.ID}`;
+    })
+    return checkpoints;
+}
+
+function tagThemes(themes, header, index) {
+    if (!themes) { return []; }
+    themes.forEach((theme) => {
+        theme.id = `${header}-${index}_${theme.id}`;
+    })
+    return themes;
+}
+
+function untagObjects(objects, regex) {
+    if (!objects) { return; }
+    objects.forEach((object) => {
+        if (!(object.id.match(regex))) { return; }
+
+        object.id = object.id.replace(regex, '');
+        if (object.p_id) {
+            object.p_id = object.p_id.replace(regex, '');
+        }
+    });
+    return objects;
+}
+
+function untagPrefabs(prefabs, regex) {
+    if (!prefabs) { return; }
+    prefabs.forEach((prefab) => {
+        if (!(prefab.id.match(regex))) { return; }
+        prefab.id = prefab.id.replace(regex, '');
+        if (!prefab.objs) { return; }
+        prefab.objs = untagObjects(prefab.objs);
+    });
+    return prefabs;
+}
+
+function untagPrefabObjects(prefabObjects, regex) {
+    if (!prefabObjects) { return; }
+    prefabObjects.forEach((prefabObject) => {
+        if (!(prefabObject.id.match(regex))) { return; }
+
+        prefabObject.id = prefabObject.id.replace(regex, '');
+        if (prefabObject.p_id) {
+            prefabObject.p_id = prefabObject.p_id.replace(regex, '');
+        }
+    });
+    return prefabObjects;
+}
+
+function untagMarkers(markers, regex) {
+    if (!markers) { return; }
+    markers.forEach((marker) => {
+        if (!(marker.ID.match(regex))) { return; }
+        marker.ID = marker.ID.replace(regex, '');
+    });
+    return markers;
+}
+
+function untagCheckpoints(checkpoints, regex) {
+    if (!checkpoints) { return; }
+    checkpoints.forEach((checkpoint) => {
+        if (!(checkpoint.ID.match(regex))) { return; }
+        checkpoint.ID = checkpoint.ID.replace(regex, '');
+    });
+    return checkpoints;
+}
+
+function untagThemes(themes, regex) {
+    if (!themes) { return; }
+    themes.forEach((theme) => {
+        if (!(theme.id.match(regex))) { return; }
+        theme.id = theme.id.replace(regex, '');
+    });
+    return themes;
+}
+
+function generateMetadataObject(levelsData) {
+    const skeleton = {
+        id: metadataObjectID,
+        ak_t: 2,
+        ak_o: 0,
+        ot: 0,
+        s: 4,
+        n: `CollabSync Metadata`,
+        text: '',
+        o: {
+            x: 0,
+            y: 0
+        },
+        ed:{l:0},
+        e: [
+            {k: [{ev: [0, 0]}]},
+            {k: [{ev: [0, 0]}]},
+            {k: [{ev: [0]}]},
+            {k: [{ev: [0]}]}
+        ],
+        st: -999 // lel
+    }
+
+    let metadata = []
+
+    levelsData.forEach((data, i) => {
+        metadata.push({
+            version: version,
+            index: i,
+            audioDuration: data.audioDuration,
+            combineOptions: data.combineOptions,
+            metadata: data.metadata,
+            level: {
+                editor: data.level.editor,
+                objects: data.combineOptions.objects ? [] : data.level.objects ?? [],
+                parallax_settings: data.level.parallax_settings ?? {},
+                prefabs: data.combineOptions.prefabs ? [] : data.level.prefabs ?? [],
+                unpackedPrefabs: data.combineOptions.unpackedPrefabs ? [] : data.level.prefab_objects ?? [],
+                markers: data.combineOptions.markers ? [] : data.level.markers ?? [],
+                checkpoints: data.combineOptions.checkpoints ? [] : data.level.checkpoints ?? [],
+                themes: data.combineOptions.themes ? [] : data.level.themes ?? [],
+                events: data.level.events ?? [],
+                triggers: data.level.triggers ?? [],
+            }
+        })
+    })
+
+    skeleton.text = JSON.stringify(metadata);
+    return skeleton;
+}
+
+function countObjects(level) {
+    const data = {
+        objects: 0,
+        parallaxObjects: 0,
+        prefabs: 0,
+        unpackedPrefabs: 0,
+        markers: 0,
+        checkpoints: 0,
+        themes: 0,
+        events: 0,
+        triggers: 0
+    }
+
+    if (level.objects) {
+        data.objects += level.objects.length ?? 0;
+    };
+
+    if (level.parallax_settings) {
+        if (level.parallax_settings.l) {
+            level.parallax_settings.l.forEach((entry) => {
+                if (entry.o) {
+                data.parallaxObjects += entry.o.length;
+                }
+            })
+        }
+    }
+
+    if (level.prefabs) {
+        data.prefabs += level.prefabs.length ?? 0;
+    };
+
+    if (level.prefab_objects) {
+        data.unpackedPrefabs += level.prefab_objects.length ?? 0;
+    }
+
+    if (level.markers) {
+        data.markers += level.markers.length ?? 0;
+    }
+
+    if (level.checkpoints) {
+        data.checkpoints += level.checkpoints.length ?? 0;
+    }
+
+    if (level.themes) {
+        data.themes += level.themes.length ?? 0;
+    }
+
+    if (level.events) {
+        for (let x = 0; x < level.events.length; x++) {
+            data.events += level.events[x].length ?? 0;
+        }
+    }
+
+    if (level.triggers) {
+        data.triggers += level.triggers.length ?? 0;
+    }
+
+    return data;
+}
+
+function countTotalObjects(levelsData) {
+    const data = {
+        objects: 0,
+        parallaxObjects: 0,
+        prefabs: 0,
+        unpackedPrefabs: 0,
+        markers: 0,
+        checkpoints: 0,
+        themes: 0,
+        events: 0,
+        triggers: 0
+    }
+
+    levelsData.forEach((levelData) => {
+        const counts = countObjects(levelData.level);
+        for (const key in counts) {
+            if (levelData.combineOptions[key]) {
+                data[key] = data[key] + counts[key];
+            }
+        }
+    })
+
+    return data;
+}
+
+function getPartLength(part) {
+    let startTime = 99999;
+    let endTime = 0;
+    part.objects.forEach((object) => {
+        if (object.st < startTime) {
+            startTime = object.st;
+        }
+
+        if ((object.st + object.ak_o) > endTime) {
+            endTime = (object.st + object.ak_o);
+        }
+    })
+
+    return {
+        startTime: startTime,
+        endTime: endTime
+    }
+}
+
+function sortParts(levelsData) {
+    let temp = [];
+    levelsData.forEach((data) => {
+        const times = getPartLength(data.level);
+        temp.push({ 
+            startTime: times.startTime,
+            data: data 
+        })
+    })
+
+    let sorted = temp.sort((a, b) => a.startTime - b.startTime);
+    temp = [];
+    return sorted.map(item => item.data);
+}
+
+function splitLevelParts(levelData, metadata) {
+    const newLevelsData = [];
+
+    metadata.forEach((entry) => {
+        const object = {
+            audioDuration: entry.audioDuration,
+            combineOptions: entry.combineOptions,
+            metadata: entry.metadata,
+            level: {
+                editor: entry.level.editor,
+                objects: entry.level.objects ?? [],
+                parallax_settings: entry.level.parallax_settings ?? {},
+                prefabs: entry.level.prefabs ?? [],
+                prefab_objects: entry.level.prefab_objects ?? [],
+                markers: entry.level.markers ?? [],
+                checkpoints: entry.level.checkpoints ?? [],
+                themes: entry.level.themes ?? [],
+                events: entry.level.events ?? [],
+                triggers: entry.level.triggers ?? [],
+            }
+        }
+        newLevelsData.push(object);
+    })
+
+    levelData.level.objects.forEach((object) => {
+        if (object) {
+            if (object.id.match(headerIndexRegex)) { // If the ID has any trace of tagging
+                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) { // If the extracted level index exists in the metadata
+                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.objects.push(object);
+                }
+            }
+        }
+    })
+
+    levelData.level.prefabs.forEach((object) => {
+        if (object) {
+            if (object.id.match(headerIndexRegex)) {
+                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) {
+                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.prefabs.push(object);
+                }
+            }
+        }
+    })
+
+    levelData.level.prefab_objects.forEach((object) => {
+        if (object) {
+            if (object.id.match(headerIndexRegex)) {
+                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) {
+                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.prefab_objects.push(object);
+                }
+            }
+        }
+    })
+
+    levelData.level.markers.forEach((object) => {
+        if (object) {
+            if (object.ID.match(headerIndexRegex)) {
+                if (newLevelsData[object.ID.match(headerIndexRegex)[0]]) {
+                    newLevelsData[object.ID.match(headerIndexRegex)[0]].level.markers.push(object);
+                }
+            }
+        }
+    })
+
+    levelData.level.checkpoints.forEach((object) => {
+        if (object) {
+            if (object.ID.match(headerIndexRegex)) { // why the fuck is the "ID" entry capitalized for markers and checkpoints
+                if (newLevelsData[object.ID.match(headerIndexRegex)[0]]) {
+                    newLevelsData[object.ID.match(headerIndexRegex)[0]].level.checkpoints.push(object);
+                }
+            }
+        }
+    })
+
+    levelData.level.themes.forEach((object) => {
+        if (object) {
+            if (object.id.match(headerIndexRegex)) {
+                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) {
+                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.themes.push(object);
+                }
+            }
+        }
+    })
+
+    levelData.level.triggers.forEach((object) => {
+        if (object) {
+            if (object.id.match(headerIndexRegex)) {
+                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) {
+                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.triggers.push(object);
+                }
+            }
+        }
+    })
+
+    return newLevelsData;
+}
+
 function combineObjects(level_one,level_two) {
     let result = level_one; // Set result to level 1, this preserves level 1's editor data and other objects
     let level_one_objects = level_one.objects;
@@ -151,10 +582,10 @@ function combineTriggers(level_one,level_two) {
 function combineLevels(levelsData) {
     let base_level = JSON.parse(JSON.stringify(levelsData[0].level)); // Make a copy without references to the original
 
-    if (base_level.objects === undefined) { base_level.objects = []; }
-    if (base_level.markers === undefined) { base_level.objects = []; }
-    if (base_level.checkpoints === undefined) { base_level.checkpoints = [{"ID":"▆3K⁕▥▐8✿BE▧▆g_▤E","n":"Base Checkpoint"}]; }
-    if (base_level.events === undefined) { base_level.events = []; }
+    if (base_level.objects === undefined) { throw new Error('There aren\'t any objects! Something went horribly wrong...'); }
+    if (base_level.markers === undefined) { base_level.markers = []; }
+    if (base_level.checkpoints === undefined) { throw new Error('Base checkpoint doesn\'t exist! Please make sure all parts have at least one checkpoint (including base checkpoint).'); }
+    if (base_level.events === undefined) { throw new Error('Events are improperly defined! Please make sure there\'s at least one of each event keyframe.'); }
     if (base_level.themes === undefined) { base_level.themes = []; }
     if (base_level.prefabs === undefined) { base_level.prefabs = []; }
     if (base_level.prefab_objects === undefined) { base_level.prefab_objects = []; }
@@ -207,7 +638,7 @@ function combineLevels(levelsData) {
             }
         }
     
-        if (combineOptions.parallaxObjects && false) {
+        if (combineOptions.parallaxObjects && false) { // not yet
             if (base_level.parallax_settings.l && level.parallax_settings.l) {
                 base_level = combineParallax(base_level, level);
             }
@@ -221,4 +652,13 @@ function combineLevels(levelsData) {
     }
 
     return base_level;
+}
+
+function uncombineLevel(levelsData) { // evil twin of combineLevels
+    const level = JSON.parse(JSON.stringify(levelsData)) // Create a copy without any references
+    const metadata = findMetadata(level.level);
+    if (!metadata) { throw new Error('Combiner metadata is invalid!'); }
+    let parts = splitLevelParts(level, metadata);
+    parts = untagLevels(parts);
+    return parts;
 }

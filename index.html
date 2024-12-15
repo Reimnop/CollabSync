@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CollabSync</title>
-    <style type="text/css">
-        @import "https://thevoidunknown.github.io/CollabSync/alpha-ui.css";
-    </style>
 
-    <script src="https://thevoidunknown.github.io/CollabSync/index.js"></script>
+    <!--<style type="text/css">
+        @import "https://thevoidunknown.github.io/CollabSync/alpha-ui.css";
+    </style>-->
+    <!--<script src="https://thevoidunknown.github.io/CollabSync/index.js"></script>-->
+
+
+    <style type="text/css">
+      @import "file:///home/voidunknown/Desktop/CollabSync/alpha-ui.css";
+    </style>
+    <script src="file:///home/voidunknown/Desktop/CollabSync/index.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -19,34 +25,57 @@
 
     <br/>-->
 
-    <div id="main-window" style="display: flex; flex-flow: row nowrap; width: 99vw; height: 80vh; gap: 8px; justify-content: space-between;">
+    <div id="main-window" style="display: flex; flex-flow: row nowrap; width: 99vw; height: 94vh; gap: 8px; justify-content: space-between;">
       <div id="config-window" class="background-accent h-full" style="display: flex; flex-flow: column wrap; gap: 32px; padding: 16px; min-width: 60%; overflow-y: scroll;">
         <div id="upload-container">
-          <input type="file" class="button" id="folder-upload" webkitdirectory multiple />
+          <div id="drop-area" style="border: 2px dashed #ccc; padding: 10px; text-align: center; cursor: pointer;">
+            <p>
+              Drag and drop level
+              <span class="yellow-text">
+                files
+              </span>
+              <span class="gray-text">
+                (level.vgd, medatata.vgm, audio.ogg),
+              </span>
+              or click here to add a level
+              <span class="yellow-text">
+                folder.
+              </span><br>
+
+              <span class="red-text" style="font-size: 120%;">
+                Due to browser limitations, drag and drop does NOT work on folders.
+              </span>
+            </p>
+            <input type="file" id="folder-upload" webkitdirectory multiple style="display: none;" />
+          </div>
+          <div id="error-box"></div>
           <hr>
           <div id="file-list" class="list-container"></div>
         </div>
       </div>
   
-      <div id="export-window" class="background-accent h-full" style="display: flex; flex-flow: column wrap; gap: 4px; padding: 16px; min-width: 36%; overflow-y: scroll;">
-        <div class="text-big">Global Options</div>
-        <div id="global-options">
-          hello there
-        </div>
-        <br/>
+      <div id="export-window" class="background-accent h-full" style="display: flex; flex-flow: column wrap; gap: 16px; padding: 16px; min-width: 36%; overflow-y: scroll; overflow-x: hidden;">
 
-        <div class="text-big">Parts Timeline</div>
-        <div id="global-timeline" style="background-color: #19191a; border: 2px solid #ffffff; border-radius: 4px; display: flex; flex-flow: column nowrap; overflow-x: hidden;">
-          hello there
+        <div>
+          <div class="text-big">Global Options</div>
+          <div id="global-options"></div>
+        </div>
+        
+        <br>
+
+        <div>
+          <div class="text-big">Parts Timeline</div>
+          <div id="global-timeline" style="background-color: #19191a; border: 2px solid #ffffff; border-radius: 4px; display: flex; flex-flow: column nowrap; overflow-x: hidden;"></div>  
         </div>
 
         <br>
 
-        <div id="total-objects-count">
-          hello there 
+        <div>
+          <div class="text-big">Total Objects</div>
+          <div id="total-objects-count"></div>
         </div>
 
-        <br>
+        <hr class="w-full">
 
         <div class="jsab clickable button" style="text-align: center; font-size: 110%;" onclick="combineAndDownload();">
           Combine & Download
@@ -57,7 +86,6 @@
 
     <script>
         const globalOptions = {
-          objectTagging: true,
           exportCombinerMetadata: true
         }
 
@@ -67,92 +95,150 @@
         ]
 
         var levelsData = [];
-        document.getElementById('folder-upload').addEventListener('change', handleFolderUpload);
+        const dropArea = document.getElementById('drop-area');
+        const folderUploadInput = document.getElementById('folder-upload');
+
+        dropArea.addEventListener('click', () => {
+          folderUploadInput.click();
+        });
+
+        dropArea.addEventListener('dragover', (event) => {
+          event.preventDefault();
+          dropArea.style.borderColor = '#ffd000'; // Change border color on hover
+        });
+
+        dropArea.addEventListener('dragleave', () => {
+          dropArea.style.borderColor = '#ccc';
+        });
+
+        dropArea.addEventListener('drop', (event) => {
+          event.preventDefault();
+          dropArea.style.borderColor = '#ccc';
+          const files = event.dataTransfer.files;
+          if (
+            event.dataTransfer.files[0].size == 0 && 
+            event.dataTransfer.files.length == 1
+          ) {
+            displayError('You sneaky bugger I knew you\'d try dragging a folder');
+            return;
+          }
+          handleFolderUpload({ target: { files } });
+        });
+
+        folderUploadInput.addEventListener('change', handleFolderUpload);
         
         async function handleFolderUpload(event) {
+          clearError();
+          try {
             const files = event.target.files;
             const folderData = {};
             const color = colorCodingPalette[Math.floor(Math.random() * colorCodingPalette.length)];
-            
+
             folderData.combineOptions = {
-                objects: true,
-                parallaxObjects: true,
-                prefabs: true,
-                unpackedPrefabs: true,
-                markers: true,
-                checkpoints: true,
-                themes: true,
-                events: true,
-                triggers: true,
-                swatch: color
+              objects: true,
+              parallaxObjects: true,
+              prefabs: true,
+              unpackedPrefabs: true,
+              markers: true,
+              checkpoints: true,
+              themes: true,
+              events: true,
+              triggers: true,
+              swatch: color
             };
 
             for (const file of files) {
-                const fileName = file.name;
-                if (fileName === 'level.vgd') {
-                    await readFileAsText(file).then(content => {
-                        folderData.level = JSON.parse(content);
-                    });
-                } else if (fileName === 'metadata.vgm') {
-                    await readFileAsText(file).then(content => {
-                        folderData.metadata = JSON.parse(content);
-                    });
-                } else if (fileName === 'cover.jpg') {
-                    await readFileAsDataURL(file).then(base64 => {
-                        folderData.cover = base64;
-                    });
-                } else if (fileName === 'audio.ogg') {
-                    const audioDuration = await getAudioDuration(file);
-                    folderData.audioDuration = audioDuration;
-                } else if (fileName === 'level.ogg') {
-                    const audioDuration = await getAudioDuration(file);
-                    folderData.audioDuration = audioDuration;
-                }
+              switch (file.name) {
+
+                case 'level.vgd':
+                  await readFileAsText(file).then(content => {
+                    folderData.level = JSON.parse(content);
+                  });
+                break;
+
+                case 'metadata.vgm':
+                  await readFileAsText(file).then(content => {
+                    folderData.metadata = JSON.parse(content);
+                  });
+                break;
+
+                case 'level.jpg':
+                case 'cover.jpg':
+                  await readFileAsDataURL(file).then(base64 => {
+                    folderData.cover = base64;
+                  });
+                break;
+
+                case 'level.ogg':
+                case 'audio.ogg':
+                  folderData.audioDuration = await getAudioDuration(file);
+                break;
+
+              }
             }
 
-            checkAndAddToLevelsData(folderData);
+            if (!folderData.level) { throw new Error('No valid level file. Is it in legacy format? (level.vgd)'); }
+            if (!folderData.metadata) { throw new Error('No valid metadata file. Is is in legacy format? (metadata.vgm)'); }
+            if (!folderData.audioDuration) { throw new Error('No valid audio file. (level.ogg, audio.ogg)'); }
+
+            if (findMetadata(folderData.level)) {
+              console.info(`Combiner metadata found`);
+              try {
+                let parts = uncombineLevel(folderData);
+                parts.forEach((part) =>{
+                  addToLevelsList(part);
+                })
+              } catch (error) {
+                displayError(`There was a metadata error! Please report this to @thevoidunknown on discord:<br>Error: ${error.message}<br>Cause: ${error.cause}<br>${error.lineNumber !== undefined ? `Line no. ${error.lineNumber} in file ${error.fileName}` : ''}`);
+                console.error(error)
+              }
+            } else {
+              console.log(findMetadata(folderData.level));
+              addToLevelsList(folderData);
+            }
+          } catch (error) {
+            displayError(error);
+          }
         }
 
         function getAudioDuration(audioFile) {
-            return new Promise((resolve, reject) => {
-                const audio = new Audio();
-                const url = URL.createObjectURL(audioFile);
-                
-                audio.src = url;
-                audio.addEventListener('loadedmetadata', () => {
-                    resolve(audio.duration);
-                    URL.revokeObjectURL(url); // Clean up the object URL
-                });
-                audio.addEventListener('error', () => {
-                    reject(new Error('Failed to load audio file'));
-                    URL.revokeObjectURL(url); // Clean up the object URL
-                });
+          return new Promise((resolve, reject) => {
+            const audio = new Audio();
+            const url = URL.createObjectURL(audioFile);
+            
+            audio.src = url;
+            audio.addEventListener('loadedmetadata', () => {
+              resolve(audio.duration);
+              URL.revokeObjectURL(url); // Clean up the object URL
             });
+            audio.addEventListener('error', () => {
+              reject(new Error('Failed to load audio file'));
+              URL.revokeObjectURL(url); // Clean up the object URL
+            });
+          });
         }
 
         function readFileAsText(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsText(file);
-            });
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsText(file);
+          });
         }
 
         function readFileAsDataURL(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
         }
 
-        function checkAndAddToLevelsData(folderData) {
-            if (folderData.level && folderData.metadata) {
-                levelsData.push(folderData);
-                updateUi();
-            }
+        function addToLevelsList(folderData) {
+          levelsData.push(folderData);
+          updateUi();
         }
 
         function updateUi() {
@@ -164,8 +250,12 @@
 
           const options = `
           <div class="flex-row">
-            <div class="text-big toggleable clickable ${globalOptions.exportCombinerMetadata ? 'focused' : ''}" onclick="toggleGlobalOption('exportCombinerMetadata')">Metadata</div>
-            <div class="text-big toggleable clickable ${globalOptions.objectTagging ? 'focused' : ''}" onclick="toggleGlobalOption('objectTagging')">Tagging</div>
+            <div class="text-big toggleable clickable ${globalOptions.exportCombinerMetadata ? 'focused' : ''}" onclick="toggleGlobalOption('exportCombinerMetadata')">
+              <div class="tooltip white"> ?
+                <div class="tooltip tooltip-text">Exports hidden metadata baked into the level, so you can un-combine this level later if needed. <span class="red-text">This will increase the file size.</span></div>
+              </div>
+              Metadata
+            </div>
           </div>
           `
           optionsMenu.append(options);
@@ -208,7 +298,7 @@
             `;
             const listItem = `
             <div class="list-item-start w-full" style="border: 4px solid ${data.combineOptions.swatch}; background-color: #212121;">
-              <img src="${data.cover || defaultCover}" style="height: 128px">
+              <img src="${data.cover ?? 'url(https://thevoidunknown.github.io/CollabSync/icons/default-cover.jpg)'}" style="height: 128px">
               <div class="list-item-col" style="background-color: #212121;">
                 <div class="list-item w-full">
                   <div class="list-item">
@@ -269,143 +359,67 @@
           updateUi();
         }
 
-        function countObjects(level) {
-          const data = {
-            objects: 0,
-            parallaxObjects: 0,
-            prefabs: 0,
-            unpackedPrefabs: 0,
-            markers: 0,
-            checkpoints: 0,
-            themes: 0,
-            events: 0,
-            triggers: 0
-          }
-
-          if (level.objects) {
-            data.objects += level.objects.length ?? 0;
-          };
-
-          if (level.parallax_settings) {
-            if (level.parallax_settings.l) {
-              level.parallax_settings.l.forEach((entry) => {
-                if (entry.o) {
-                  data.parallaxObjects += entry.o.length;
-                }
-              })
-            }
-          }
-
-          if (level.prefabs) {
-            data.prefabs += level.prefabs.length ?? 0;
-          };
-
-          if (level.prefab_objects) {
-            data.unpackedPrefabs += level.prefab_objects.length ?? 0;
-          }
-
-          if (level.markers) {
-            data.markers += level.markers.length ?? 0;
-          }
-
-          if (level.checkpoints) {
-            data.checkpoints += level.checkpoints.length ?? 0;
-          }
-
-          if (level.themes) {
-            data.themes += level.themes.length ?? 0;
-          }
-
-          if (level.events) {
-            for (let x = 0; x < level.events.length; x++) {
-                data.events += level.events[x].length ?? 0;
-            }
-          }
-
-          if (level.triggers) {
-            data.triggers += level.triggers.length ?? 0;
-          }
-
-          return data;
-        }
-
-        function countTotalObjects(levelsData) {
-          const data = {
-            objects: 0,
-            parallaxObjects: 0,
-            prefabs: 0,
-            unpackedPrefabs: 0,
-            markers: 0,
-            checkpoints: 0,
-            themes: 0,
-            events: 0,
-            triggers: 0
-          }
-
-          levelsData.forEach((levelData) => {
-            const counts = countObjects(levelData.level);
-            for (const key in counts) {
-              data[key] = data[key] + counts[key];
-            }
-          })
-
-          return data;
-        }
-
         function removeUpload(index) {
           levelsData.splice(index, 1);
           updateUi();
         }
 
-        function generateMetadata(levelsData) {
+        function combineAndDownload() {
+          if (levelsData.length < 1) { return; }
 
-        }
+          clearError();
+          try {
+            let content = JSON.parse(JSON.stringify(levelsData)); // Create a copy without any references
 
-        function getPartLength(part) {
-          let startTime = 99999;
-          let endTime = 0;
-          part.objects.forEach((object) => {
-            if (object.st < startTime) {
-              startTime = object.st;
+            if (globalOptions.exportCombinerMetadata) {
+              content = tagLevels(content);
             }
 
-            if ((object.st + object.ak_o) > endTime) {
-              endTime = (object.st + object.ak_o);
-            }
-          })
+            content = combineLevels(content);
 
-          return {
-            startTime: startTime,
-            endTime: endTime
+            if (globalOptions.exportCombinerMetadata) {
+              content.objects.push(generateMetadataObject(levelsData));
+            }
+
+            let blob = new Blob([JSON.stringify(content)], { type: 'text/plain' });
+            let link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'level.vgd';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          } catch (error) {
+            displayError(`There was a combiner error! Please report this to @thevoidunknown on discord:<br>Error: ${error.message}<br>Cause: ${error.cause}<br>${error.lineNumber !== undefined ? `Line no. ${error.lineNumber} in file ${error.fileName}` : ''}`);
           }
         }
 
-        function sortParts(levelsData) {
-          let temp = [];
-          levelsData.forEach((data) => {
-            const times = getPartLength(data.level);
-            temp.push({ 
-              startTime: times.startTime,
-              data: data 
-            })
+        function displayError(message) {
+          const errorContainer = $('#error-box');
+          errorContainer.empty();
+          errorContainer.append(`
+            <div class="red-text" style="font-size: 110%;">${message}</div>
+          `)
+        }
+
+        function clearError() {
+          const errorContainer = $('#error-box');
+          errorContainer.empty();
+        }
+
+        function tagLevels(inputData) {
+          let levelsData = JSON.parse(JSON.stringify(inputData));
+
+          levelsData.forEach((data, i) => {
+            data.level.objects = tagObjects(data.level.objects, header, i);
+            data.level.prefabs = tagPrefabs(data.level.prefabs, header, i);
+            data.level.prefab_objects = tagPrefabObjects(data.level.prefab_objects, header, i);
+            data.level.markers = tagMarkers(data.level.markers, header, i);
+            data.level.checkpoints = tagCheckpoints(data.level.checkpoints, header, i);
+            data.level.themes = tagThemes(data.level.themes, header, i);
           })
 
-          let sorted = temp.sort((a, b) => a.startTime - b.startTime);
-          temp = [];
-          return sorted.map(item => item.data);
-        }
-
-        function combineAndDownload() {
-          let content = JSON.stringify(combineLevels(levelsData));
-
-          let blob = new Blob([content], { type: 'text/plain' });
-          let link = document.createElement('a');
-          link.href = URL.createObjectURL(blob);
-          link.download = 'level.vgd';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
+          return levelsData;
+        } 
 
         updateUi();
     </script>

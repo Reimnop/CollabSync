@@ -45,6 +45,22 @@
     background-color: #ee113e;
   }
 
+  .red-text {
+    color: #ee113e;
+  }
+
+  .blue-text {
+    color: #00aeef;
+  }
+
+  .yellow-text {
+    color: #ffd000;
+  }
+
+  .gray-text {
+    color: #797979;
+  }
+
   .yellow {
     background-color: #ffd000;
     color: #19191a !important;
@@ -76,6 +92,7 @@
 
   .clickable {
     cursor: pointer;
+    position: relative;
   }
 
   .toggleable {
@@ -193,7 +210,7 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
-    gap: 4px;
+    gap: 10px;
     align-items: center;
   }
 
@@ -604,4 +621,43 @@
   .timeline-bar {
     height: 20px;
     position: relative;
+  }
+
+  .tooltip {
+    position: absolute;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    font-size: 80%;
+    top: -8px;
+    right: -8px;
+    border-radius: 8px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .tooltip .tooltip-text {
+    visibility: hidden;
+    width: max-content;
+    height: max-content;
+    max-width: 320px;
+    max-height: 160px;
+    text-wrap: pretty;
+    background-color: #ffffff;
+    color: #191919;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    top: -200%;
+    left: 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
+    box-shadow: 0px 0px 12px #000000c2;
+  }
+
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
   }
