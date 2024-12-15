@@ -341,75 +341,89 @@ function splitLevelParts(levelData, metadata) {
         newLevelsData.push(object);
     })
 
-    levelData.level.objects.forEach((object) => {
-        if (object) {
-            if (object.id.match(headerIndexRegex)) { // If the ID has any trace of tagging
-                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) { // If the extracted level index exists in the metadata
-                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.objects.push(object);
+    if (levelData.objects) {
+        levelData.level.objects.forEach((object) => {
+            if (object) {
+                if (object.id.match(headerIndexRegex)) { // If the ID has any trace of tagging
+                    if (newLevelsData[object.id.match(headerIndexRegex)[0]]) { // If the extracted level index exists in the metadata
+                        newLevelsData[object.id.match(headerIndexRegex)[0]].level.objects.push(object);
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 
-    levelData.level.prefabs.forEach((object) => {
-        if (object) {
-            if (object.id.match(headerIndexRegex)) {
-                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) {
-                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.prefabs.push(object);
+    if (levelData.prefabs) {
+        levelData.level.prefabs.forEach((prefab) => {
+            if (prefab) {
+                if (prefab.id.match(headerIndexRegex)) {
+                    if (newLevelsData[prefab.id.match(headerIndexRegex)[0]]) {
+                        newLevelsData[prefab.id.match(headerIndexRegex)[0]].level.prefabs.push(prefab);
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 
-    levelData.level.prefab_objects.forEach((object) => {
-        if (object) {
-            if (object.id.match(headerIndexRegex)) {
-                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) {
-                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.prefab_objects.push(object);
+    if (levelData.prefab_objects) {
+        levelData.level.prefab_objects.forEach((prefabObject) => {
+            if (prefabObject) {
+                if (prefabObject.id.match(headerIndexRegex)) {
+                    if (newLevelsData[prefabObject.id.match(headerIndexRegex)[0]]) {
+                        newLevelsData[prefabObject.id.match(headerIndexRegex)[0]].level.prefab_objects.push(prefabObject);
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 
-    levelData.level.markers.forEach((object) => {
-        if (object) {
-            if (object.ID.match(headerIndexRegex)) {
-                if (newLevelsData[object.ID.match(headerIndexRegex)[0]]) {
-                    newLevelsData[object.ID.match(headerIndexRegex)[0]].level.markers.push(object);
+    if (levelData.markers) {
+        levelData.level.markers.forEach((marker) => {
+            if (marker) {
+                if (marker.ID.match(headerIndexRegex)) {
+                    if (newLevelsData[marker.ID.match(headerIndexRegex)[0]]) {
+                        newLevelsData[marker.ID.match(headerIndexRegex)[0]].level.markers.push(marker);
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 
-    levelData.level.checkpoints.forEach((object) => {
-        if (object) {
-            if (object.ID.match(headerIndexRegex)) { // why the fuck is the "ID" entry capitalized for markers and checkpoints
-                if (newLevelsData[object.ID.match(headerIndexRegex)[0]]) {
-                    newLevelsData[object.ID.match(headerIndexRegex)[0]].level.checkpoints.push(object);
+    if (levelData.checkpoints) {
+        levelData.level.checkpoints.forEach((checkpoint) => {
+            if (checkpoint) {
+                if (checkpoint.ID.match(headerIndexRegex)) { // why the fuck is the "ID" entry capitalized for markers and checkpoints
+                    if (newLevelsData[checkpoint.ID.match(headerIndexRegex)[0]]) {
+                        newLevelsData[checkpoint.ID.match(headerIndexRegex)[0]].level.checkpoints.push(checkpoint);
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 
-    levelData.level.themes.forEach((object) => {
-        if (object) {
-            if (object.id.match(headerIndexRegex)) {
-                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) {
-                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.themes.push(object);
+    if (levelData.themes) {
+        levelData.level.themes.forEach((theme) => {
+            if (theme) {
+                if (theme.id.match(headerIndexRegex)) {
+                    if (newLevelsData[theme.id.match(headerIndexRegex)[0]]) {
+                        newLevelsData[theme.id.match(headerIndexRegex)[0]].level.themes.push(theme);
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 
-    levelData.level.triggers.forEach((object) => {
-        if (object) {
-            if (object.id.match(headerIndexRegex)) {
-                if (newLevelsData[object.id.match(headerIndexRegex)[0]]) {
-                    newLevelsData[object.id.match(headerIndexRegex)[0]].level.triggers.push(object);
+    if (levelData.triggers) {
+        levelData.level.triggers.forEach((trigger) => {
+            if (trigger) {
+                if (trigger.id.match(headerIndexRegex)) {
+                    if (newLevelsData[trigger.id.match(headerIndexRegex)[0]]) {
+                        newLevelsData[trigger.id.match(headerIndexRegex)[0]].level.triggers.push(trigger);
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 
     return newLevelsData;
 }
