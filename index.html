@@ -31,7 +31,7 @@
               <span class="gray-text">
                 (level.vgd, medatata.vgm, audio.ogg),
               </span>
-              or click here to add a level
+                or click here to add a level
               <span class="yellow-text">
                 folder.
               </span><br>
@@ -244,7 +244,7 @@
 
           const options = `
           <div class="flex-row">
-            <div class="text-big toggleable clickable ${globalOptions.exportCombinerMetadata ? 'focused' : ''}" onclick="toggleGlobalOption('exportCombinerMetadata')">
+            <div class="text-big toggleable clickable ${escapeHtml(globalOptions.exportCombinerMetadata) ? 'focused' : ''}" onclick="toggleGlobalOption('exportCombinerMetadata')">
               <div class="tooltip white"> ?
                 <div class="tooltip tooltip-text">Exports hidden metadata baked into the level, so you can un-combine this level later if needed. <span class="red-text">This will increase the file size.</span></div>
               </div>
@@ -284,20 +284,20 @@
             const endPercent = (times.endTime / data.audioDuration) * 100;
 
             const timelineDiv = `
-              <div class="timeline-bar" style="background-color: ${data.combineOptions.swatch}; left: ${startPercent}%; width: ${endPercent}%;"></div>
+              <div class="timeline-bar" style="background-color: ${escapeHtml(data.combineOptions.swatch)}; left: ${startPercent}%; width: ${endPercent}%;"></div>
             `;
 
             const removeButton = `
-                <button class="button clickable red" onclick="removeUpload(${index})">Remove</button>
+              <button class="button clickable red" onclick="removeUpload(${index})">Remove</button>
             `;
             const listItem = `
-            <div class="list-item-start w-full" style="border: 4px solid ${data.combineOptions.swatch}; background-color: #212121;">
+            <div class="list-item-start w-full" style="border: 4px solid ${escapeHtml(data.combineOptions.swatch)}; background-color: #212121;">
               <img src="${data.cover ?? 'https://thevoidunknown.github.io/CollabSync/icons/default-cover.jpg'}" style="height: 128px">
               <div class="list-item-col" style="background-color: #212121;">
                 <div class="list-item w-full">
                   <div class="list-item">
-                    <div class="color-swatch" style="background-color: ${data.combineOptions.swatch};"></div>
-                    <div class="text yellow">Level ${index + 1} (${data.metadata.creator.steam_name || 'no creator name'})</div>
+                    <div class="color-swatch" style="background-color: ${escapeHtml(data.combineOptions.swatch)};"></div>
+                    <div class="text yellow">Level ${index + 1} (${escapeHtml(data.metadata.creator.steam_name) || 'no creator name'})</div>
                     <br/>
                     <div class="text gray object-count"><div class="icon-objects"></div>${levelObjects.objects}</div>
                     <div class="text gray object-count"><div class="icon-parallax"></div>${levelObjects.parallaxObjects}</div>
@@ -317,15 +317,15 @@
                 <div class="text-big">Combiner options</div>
                 <div class="list-item w-full">
                   <div class="list-item">
-                    <div class="text-big toggleable clickable ${data.combineOptions.objects ? 'focused' : ''}" onclick="toggleOption(${index}, 'objects')">Objects</div>
-                    <div class="text-big toggleable clickable ${data.combineOptions.prefabs ? 'focused' : ''}" onclick="toggleOption(${index}, 'prefabs')">Prefabs</div>
-                    <div class="text-big toggleable clickable ${data.combineOptions.unpackedPrefabs ? 'focused' : ''}" onclick="toggleOption(${index}, 'unpackedPrefabs')">Prefab Objects</div>
-                    <div class="text-big toggleable clickable ${data.combineOptions.parallaxObjects ? 'focused' : ''}" onclick="toggleOption(${index}, 'parallaxObjects')">Parallax</div>
-                    <div class="text-big toggleable clickable ${data.combineOptions.markers ? 'focused' : ''}" onclick="toggleOption(${index}, 'markers')">Markers</div>
-                    <div class="text-big toggleable clickable ${data.combineOptions.checkpoints ? 'focused' : ''}" onclick="toggleOption(${index}, 'checkpoints')">Checkpoints</div>
-                    <div class="text-big toggleable clickable ${data.combineOptions.themes ? 'focused' : ''}" onclick="toggleOption(${index}, 'themes')">Themes</div>
-                    <div class="text-big toggleable clickable ${data.combineOptions.events ? 'focused' : ''}" onclick="toggleOption(${index}, 'events')">Effects</div>
-                    <div class="text-big toggleable clickable ${data.combineOptions.triggers ? 'focused' : ''}" onclick="toggleOption(${index}, 'triggers')">Triggers</div>
+                    <div class="text-big toggleable clickable ${escapeHtml(data.combineOptions.objects) ? 'focused' : ''}" onclick="toggleOption(${index}, 'objects')">Objects</div>
+                    <div class="text-big toggleable clickable ${escapeHtml(data.combineOptions.prefabs) ? 'focused' : ''}" onclick="toggleOption(${index}, 'prefabs')">Prefabs</div>
+                    <div class="text-big toggleable clickable ${escapeHtml(data.combineOptions.unpackedPrefabs) ? 'focused' : ''}" onclick="toggleOption(${index}, 'unpackedPrefabs')">Prefab Objects</div>
+                    <div class="text-big toggleable clickable ${escapeHtml(data.combineOptions.parallaxObjects) ? 'focused' : ''}" onclick="toggleOption(${index}, 'parallaxObjects')">Parallax</div>
+                    <div class="text-big toggleable clickable ${escapeHtml(data.combineOptions.markers) ? 'focused' : ''}" onclick="toggleOption(${index}, 'markers')">Markers</div>
+                    <div class="text-big toggleable clickable ${escapeHtml(data.combineOptions.checkpoints) ? 'focused' : ''}" onclick="toggleOption(${index}, 'checkpoints')">Checkpoints</div>
+                    <div class="text-big toggleable clickable ${escapeHtml(data.combineOptions.themes) ? 'focused' : ''}" onclick="toggleOption(${index}, 'themes')">Themes</div>
+                    <div class="text-big toggleable clickable ${escapeHtml(data.combineOptions.events) ? 'focused' : ''}" onclick="toggleOption(${index}, 'events')">Effects</div>
+                    <div class="text-big toggleable clickable ${escapeHtml(data.combineOptions.triggers) ? 'focused' : ''}" onclick="toggleOption(${index}, 'triggers')">Triggers</div>
                   </div>
                 </div>
               </div>
@@ -428,6 +428,18 @@
           })
 
           return levelsData;
+        }
+
+        function escapeHtml(str) { // thanks for the XSS reim
+            if (typeof str !== 'string') {
+                return str;
+            }
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         updateUi();
