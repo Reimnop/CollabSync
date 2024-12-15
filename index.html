@@ -409,11 +409,26 @@
             data.level.prefab_objects = tagPrefabObjects(data.level.prefab_objects, header, i);
             data.level.markers = tagMarkers(data.level.markers, header, i);
             data.level.checkpoints = tagCheckpoints(data.level.checkpoints, header, i);
-            data.level.themes = tagThemes(data.level.themes, header, i);
+            //data.level.themes = tagThemes(data.level.themes, header, i);
           })
 
           return levelsData;
         } 
+
+        function untagLevels(inputData) {
+          let levelsData = inputData;
+
+          levelsData.forEach((data) => {
+            data.level.objects = untagObjects(data.level.objects, headerRegex);
+            data.level.prefabs = untagPrefabs(data.level.prefabs, headerRegex);
+            data.level.prefab_objects = untagPrefabObjects(data.level.prefab_objects, headerRegex);
+            data.level.markers = untagMarkers(data.level.markers, headerRegex);
+            data.level.checkpoints = untagCheckpoints(data.level.checkpoints, headerRegex);
+            //data.level.themes = untagThemes(data.level.themes, headerRegex);
+          })
+
+          return levelsData;
+        }
 
         updateUi();
     </script>

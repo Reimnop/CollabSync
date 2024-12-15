@@ -31,21 +31,6 @@ function deleteMetadataObject(level) {
     })
 }
 
-function untagLevels(inputData) {
-    let levelsData = inputData;
-
-    levelsData.forEach((data) => {
-        data.level.objects = untagObjects(data.level.objects, headerRegex);
-        data.level.prefabs = untagPrefabs(data.level.prefabs, headerRegex);
-        data.level.prefab_objects = untagPrefabObjects(data.level.prefab_objects, headerRegex);
-        data.level.markers = untagMarkers(data.level.markers, headerRegex);
-        data.level.checkpoints = untagCheckpoints(data.level.checkpoints, headerRegex);
-        data.level.themes = untagThemes(data.level.themes, headerRegex);
-    })
-
-    return levelsData;
-}
-
 function tagObjects(objects, header, index) {
     if (!objects) { return []; }
     objects.forEach((object) => {
