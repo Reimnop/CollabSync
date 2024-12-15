@@ -341,7 +341,7 @@ function splitLevelParts(levelData, metadata) {
         newLevelsData.push(object);
     })
 
-    if (levelData.objects) {
+    if (levelData.level.objects) {
         levelData.level.objects.forEach((object) => {
             if (object) {
                 if (object.id.match(headerIndexRegex)) { // If the ID has any trace of tagging
@@ -353,7 +353,7 @@ function splitLevelParts(levelData, metadata) {
         })
     }
 
-    if (levelData.prefabs) {
+    if (levelData.level.prefabs) {
         levelData.level.prefabs.forEach((prefab) => {
             if (prefab) {
                 if (prefab.id.match(headerIndexRegex)) {
@@ -365,7 +365,7 @@ function splitLevelParts(levelData, metadata) {
         })
     }
 
-    if (levelData.prefab_objects) {
+    if (levelData.level.prefab_objects) {
         levelData.level.prefab_objects.forEach((prefabObject) => {
             if (prefabObject) {
                 if (prefabObject.id.match(headerIndexRegex)) {
@@ -377,7 +377,7 @@ function splitLevelParts(levelData, metadata) {
         })
     }
 
-    if (levelData.markers) {
+    if (levelData.level.markers) {
         levelData.level.markers.forEach((marker) => {
             if (marker) {
                 if (marker.ID.match(headerIndexRegex)) {
@@ -389,7 +389,7 @@ function splitLevelParts(levelData, metadata) {
         })
     }
 
-    if (levelData.checkpoints) {
+    if (levelData.level.checkpoints) {
         levelData.level.checkpoints.forEach((checkpoint) => {
             if (checkpoint) {
                 if (checkpoint.ID.match(headerIndexRegex)) { // why the fuck is the "ID" entry capitalized for markers and checkpoints
@@ -401,7 +401,7 @@ function splitLevelParts(levelData, metadata) {
         })
     }
 
-    if (levelData.themes) {
+    if (levelData.level.themes) {
         levelData.level.themes.forEach((theme) => {
             if (theme) {
                 if (theme.id.match(headerIndexRegex)) {
@@ -413,7 +413,7 @@ function splitLevelParts(levelData, metadata) {
         })
     }
 
-    if (levelData.triggers) {
+    if (levelData.level.triggers) {
         levelData.level.triggers.forEach((trigger) => {
             if (trigger) {
                 if (trigger.id.match(headerIndexRegex)) {
