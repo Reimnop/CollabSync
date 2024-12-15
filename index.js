@@ -187,7 +187,7 @@ function generateMetadataObject(levelsData) {
                 unpackedPrefabs: data.combineOptions.unpackedPrefabs ? [] : data.level.prefab_objects ?? [],
                 markers: data.combineOptions.markers ? [] : data.level.markers ?? [],
                 checkpoints: data.combineOptions.checkpoints ? [] : data.level.checkpoints ?? [],
-                themes: data.combineOptions.themes ? [] : data.level.themes ?? [],
+                themes: data.level.themes ?? [],
                 events: data.level.events ?? [],
                 triggers: data.level.triggers ?? [],
             }
