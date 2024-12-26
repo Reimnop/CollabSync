@@ -22,8 +22,8 @@
 
     <br/>-->
 
-    <div id="main-window" style="display: flex; flex-flow: row nowrap; width: 100vw; height: 100vh; padding: 16px; gap: 16px;">
-      <div id="config-window" class="background-accent h-full" style="display: flex; flex-flow: column wrap; gap: 32px; padding: 16px; min-width: 60%; overflow-y: scroll;">
+    <div id="main-window" class="window-container">
+      <div id="config-window" class="background-accent h-full config-window">
         <div id="upload-container">
           <div id="drop-area" style="border: 2px dashed #ccc; padding: 10px; text-align: center; cursor: pointer;">
             <p>
@@ -51,24 +51,24 @@
         </div>
       </div>
   
-      <div id="export-window" class="background-accent h-full" style="display: flex; flex-flow: column wrap; gap: 16px; padding: 16px; width: 100%; overflow-y: scroll; overflow-x: hidden;">
+      <div id="export-window" class="background-accent h-full export-window">
 
         <div>
-          <div class="text-big">Global Options</div>
+          <h2 class="text-big">Global Options</h2>
           <div id="global-options"></div>
         </div>
         
         <br>
 
         <div>
-          <div class="text-big">Parts Timeline</div>
+          <h2 class="text-big">Parts Timeline</h2>
           <div id="global-timeline" style="background-color: #19191a; border: 2px solid #ffffff; border-radius: 4px; display: flex; flex-flow: column nowrap; overflow-x: hidden;"></div>  
         </div>
 
         <br>
 
         <div>
-          <div class="text-big">Total Objects</div>
+          <h2 class="text-big">Total Objects</h2>
           <div id="total-objects-count"></div>
         </div>
 
@@ -80,6 +80,48 @@
 
       </div>
     </div>
+
+    <style>
+      .window-container {
+        display: flex;
+        flex-flow: column-reverse nowrap;
+        width: 100vw;
+        gap: 16px;
+        padding: 16px;
+      }
+
+      .config-window {
+        display: flex;
+        flex-flow: column wrap;
+        gap: 32px;
+        padding: 16px;
+        overflow-y: scroll;
+      }
+
+      .export-window {
+        display: flex;
+        flex-flow: column wrap;
+        gap: 16px;
+        padding: 16px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
+
+      @media screen and (min-width: 768px) {
+        .window-container {
+          flex-flow: row nowrap;
+          height: 100vh;
+        }
+
+        .config-window {
+          flex: 2 1 0;
+        }
+
+        .export-window {
+          flex: 1 1 0;
+        }
+      }
+    </style>
 
     <script>
         const globalOptions = {
