@@ -662,3 +662,7 @@ label.origin-center {
   visibility: visible;
   opacity: 1;
 }
+
+#drop-area:active {
+  border-color: #ffd000;
+}

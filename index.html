@@ -99,15 +99,6 @@
           folderUploadInput.click();
         });
 
-        dropArea.addEventListener('dragover', (event) => {
-          event.preventDefault();
-          dropArea.style.borderColor = '#ffd000'; // Change border color on hover
-        });
-
-        dropArea.addEventListener('dragleave', () => {
-          dropArea.style.borderColor = '#ccc';
-        });
-
         dropArea.addEventListener('drop', (event) => {
           event.preventDefault();
           dropArea.style.borderColor = '#ccc';
@@ -187,7 +178,7 @@
                 });
               } catch (error) {
                 displayError(`There was a metadata error! Please report this to @thevoidunknown on discord:<br>Error: ${error.message}<br>Cause: ${error.cause}<br>${error.lineNumber !== undefined ? `Line no. ${error.lineNumber} in file ${error.fileName}` : ''}`);
-                console.error(error)
+                console.error(error);
               }
             } else {
               console.log(findMetadata(folderData.level));
@@ -254,7 +245,7 @@
               Metadata
             </div>
           </div>
-          `
+          `;
           optionsMenu.append(options);
 
           const totalCount = $('#total-objects-count');
@@ -271,7 +262,7 @@
               <div class="text gray object-count"><div class="icon-themes"></div>${total.themes}</div>
               <div class="text gray object-count"><div class="icon-events"></div>${total.events}</div>
               <div class="text gray object-count"><div class="icon-triggers"></div>${total.triggers}</div>
-            </div>`)
+            </div>`);
         
           const timeline = $('#global-timeline');
           timeline.empty();
@@ -395,7 +386,7 @@
           errorContainer.empty();
           errorContainer.append(`
             <div class="red-text" style="font-size: 110%;">${message}</div>
-          `)
+          `);
         }
 
         function clearError() {
@@ -428,7 +419,7 @@
             data.level.markers = untagMarkers(data.level.markers, headerRegex);
             data.level.checkpoints = untagCheckpoints(data.level.checkpoints, headerRegex);
             //data.level.themes = untagThemes(data.level.themes, headerRegex);
-          })
+          });
 
           return levelsData;
         }
