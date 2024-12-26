@@ -11,16 +11,13 @@ function findMetadata(level) {
         if (object.id === metadataObjectID) {
             try { 
                 metadata = JSON.parse(object.text);
-                return;
-            } catch (oops) { console.error(`Malformed metadata found: ${object.text}`); }
+            } catch (oops) { 
+                console.error(`Malformed metadata found: ${object.text}`);
+            }
         }
-    })
+    });
 
-    if (metadata) {
-        return metadata;
-    } else {
-        return false;
-    }
+    return metadata;
 }
 
 function deleteMetadataObject(level) {
@@ -637,11 +634,11 @@ function combineLevels(levelsData) {
             }
         }
     
-        if (combineOptions.parallaxObjects && false) { // not yet
-            if (base_level.parallax_settings.l && level.parallax_settings.l) {
-                base_level = combineParallax(base_level, level);
-            }
-        }
+        // if (combineOptions.parallaxObjects) { // not yet
+        //     if (base_level.parallax_settings.l && level.parallax_settings.l) {
+        //         base_level = combineParallax(base_level, level);
+        //     }
+        // }
     
         if (combineOptions.triggers) {
             if (base_level.triggers && level.triggers) {
@@ -654,7 +651,7 @@ function combineLevels(levelsData) {
 }
 
 function uncombineLevel(levelsData) { // evil twin of combineLevels
-    const level = JSON.parse(JSON.stringify(levelsData)) // Create a copy without any references
+    const level = JSON.parse(JSON.stringify(levelsData)); // Create a copy without any references
     const metadata = findMetadata(level.level);
     if (!metadata) { throw new Error('Combiner metadata is invalid!'); }
     let parts = splitLevelParts(level, metadata);
