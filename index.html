@@ -81,15 +81,15 @@
       </div>
     </div>
 
-    <script type="module">
+    <script>
         const globalOptions = {
           exportCombinerMetadata: true
-        }
+        };
 
         // "give me all your colors" i said. "i'll use them all" i said.
         const colorCodingPalette = [
           "#5169CA", "#8ACE00", "#561D25", "#CE8147", "#ECDD7B", "#D3E298", "#CDE7BE", "#413C58", "#A3C4BC", "#E7EFC5", "#F2E7C9", "#8DAA91", "#788475", "#5E5D5C", "#453643", "#28112B", "#4C5760", "#93A8AC", "#D7CEB2", "#A59E8C", "#66635B", "#E0E6F2", "#FAE4AB", "#E0E6F3", "#AEAEE7", "#4B8BA1", "#447097", "#B2BAAD", "#FF804B", "#D52848", "#523862", "#EFCEF6", "#C6EA9F", "#76F338", "#FFE576", "#FFF6A7", "#9E7F2F", "#3B484F", "#232F3E", "#D81B60", "#FF804B", "#D52848", "#523862", "#EFCEF6", "#FE4266", "#1D1D50", "#D8D8ED", "#8E4D53", "#AC3D65", "#7A2036", "#6B6482", "#E3DBE8", "#E1587F", "#414153", "#C5AFFC", "#572692", "#FFCAB1", "#7C5676", "#D8D3C7", "#7E7474", "#A070C2", "#D5D9DC", "#888D99", "#F4C079", "#F39155", "#84D5F4", "#B8F291"
-        ]
+        ];
 
         var levelsData = [];
         const dropArea = document.getElementById('drop-area');
@@ -151,25 +151,25 @@
                   await readFileAsText(file).then(content => {
                     folderData.level = JSON.parse(content);
                   });
-                break;
+                  break;
 
                 case 'metadata.vgm':
                   await readFileAsText(file).then(content => {
                     folderData.metadata = JSON.parse(content);
                   });
-                break;
+                  break;
 
                 case 'level.jpg':
                 case 'cover.jpg':
                   await readFileAsDataURL(file).then(base64 => {
                     folderData.cover = base64;
                   });
-                break;
+                  break;
 
                 case 'level.ogg':
                 case 'audio.ogg':
                   folderData.audioDuration = await getAudioDuration(file);
-                break;
+                  break;
 
               }
             }
@@ -184,7 +184,7 @@
                 let parts = uncombineLevel(folderData);
                 parts.forEach((part) =>{
                   addToLevelsList(part);
-                })
+                });
               } catch (error) {
                 displayError(`There was a metadata error! Please report this to @thevoidunknown on discord:<br>Error: ${error.message}<br>Cause: ${error.cause}<br>${error.lineNumber !== undefined ? `Line no. ${error.lineNumber} in file ${error.fileName}` : ''}`);
                 console.error(error)
