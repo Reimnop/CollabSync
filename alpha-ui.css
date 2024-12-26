@@ -135,7 +135,7 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  font-size: 50%;
+  font-size: 0.5rem;
   cursor: default;
   gap: 4px;
   padding: 4px;
@@ -145,7 +145,7 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  font-size: 80%;
+  font-size: 0.8rem;
   cursor: default;
   gap: 4px;
   padding: 4px;
@@ -158,7 +158,7 @@ body {
   cursor: default;
   font-weight: bolder;
   font-style: bold;
-  font-size: 100%;
+  font-size: 1rem;
   gap: 4px;
   padding: 4px;
 }
@@ -169,7 +169,7 @@ body {
   align-items: center;
   cursor: default;
   font-weight: 900;
-  font-size: 250%;
+  font-size: 2.5rem;
   font-style: bold;
   gap: 4px;
   padding: 4px;
@@ -471,7 +471,7 @@ label.radio-generic {
 
 .radio-span {
   box-sizing: border-box;
-  font-size: 90%;
+  font-size: 0.9rem;
 }
 
 .generic-text {
@@ -629,7 +629,7 @@ label.origin-center {
   display: inline-block;
   cursor: pointer;
   text-align: center;
-  font-size: 80%;
+  font-size: 0.8rem;
   top: -8px;
   right: -8px;
   border-radius: 8px;
