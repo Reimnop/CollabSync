@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CollabSync</title>
 
-    <style type="text/css">
-        @import "https://thevoidunknown.github.io/CollabSync/alpha-ui.css";
-    </style>
-    <script src="https://thevoidunknown.github.io/CollabSync/index.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/alpha-ui.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <script src="index.js"></script>
 </head>
 <body class="background">
     <!--<div class="background-accent" style="padding: 8px; display: flex; flex-flow: row nowrap; gap: 32px;">
@@ -78,7 +81,7 @@
       </div>
     </div>
 
-    <script>
+    <script type="module">
         const globalOptions = {
           exportCombinerMetadata: true
         }
@@ -292,7 +295,7 @@
             `;
             const listItem = `
             <div class="list-item-start w-full" style="border: 4px solid ${escapeHtml(data.combineOptions.swatch)}; background-color: #212121;">
-              <img src="${data.cover ?? 'https://thevoidunknown.github.io/CollabSync/icons/default-cover.jpg'}" style="height: 128px">
+              <img src="${data.cover ?? '/icons/default-cover.jpg'}" style="height: 128px">
               <div class="list-item-col" style="background-color: #212121;">
                 <div class="list-item w-full">
                   <div class="list-item">
