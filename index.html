@@ -22,7 +22,7 @@
 
     <br/>-->
 
-    <div id="main-window" style="display: flex; flex-flow: row nowrap; width: 99vw; height: 94vh; gap: 8px; justify-content: space-between;">
+    <div id="main-window" style="display: flex; flex-flow: row nowrap; width: 100vw; height: 100vh; padding: 16px; gap: 16px;">
       <div id="config-window" class="background-accent h-full" style="display: flex; flex-flow: column wrap; gap: 32px; padding: 16px; min-width: 60%; overflow-y: scroll;">
         <div id="upload-container">
           <div id="drop-area" style="border: 2px dashed #ccc; padding: 10px; text-align: center; cursor: pointer;">
@@ -51,7 +51,7 @@
         </div>
       </div>
   
-      <div id="export-window" class="background-accent h-full" style="display: flex; flex-flow: column wrap; gap: 16px; padding: 16px; min-width: 36%; overflow-y: scroll; overflow-x: hidden;">
+      <div id="export-window" class="background-accent h-full" style="display: flex; flex-flow: column wrap; gap: 16px; padding: 16px; width: 100%; overflow-y: scroll; overflow-x: hidden;">
 
         <div>
           <div class="text-big">Global Options</div>
@@ -97,6 +97,15 @@
 
         dropArea.addEventListener('click', () => {
           folderUploadInput.click();
+        });
+        
+        dropArea.addEventListener('dragover', (event) => {
+          event.preventDefault();
+          dropArea.style.borderColor = '#ffd000'; // Change border color on hover
+        });
+
+        dropArea.addEventListener('dragleave', () => {
+          dropArea.style.borderColor = '#ccc';
         });
 
         dropArea.addEventListener('drop', (event) => {
@@ -238,12 +247,12 @@
 
           const options = `
           <div class="flex-row">
-            <div class="text-big toggleable clickable ${escapeHtml(globalOptions.exportCombinerMetadata) ? 'focused' : ''}" onclick="toggleGlobalOption('exportCombinerMetadata')">
+            <button class="text-big toggleable clickable ${escapeHtml(globalOptions.exportCombinerMetadata) ? 'focused' : ''}" style="outline: none; border: none;" onclick="toggleGlobalOption('exportCombinerMetadata')">
               <div class="tooltip white"> ?
                 <div class="tooltip tooltip-text">Exports hidden metadata baked into the level, so you can un-combine this level later if needed. <span class="red-text">This will increase the file size.</span></div>
               </div>
               Metadata
-            </div>
+            </button>
           </div>
           `;
           optionsMenu.append(options);

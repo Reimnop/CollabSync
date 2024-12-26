@@ -1,6 +1,7 @@
 * {
   color: #f8f8f8;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
 body {
@@ -9,6 +10,9 @@ body {
   font-weight: 600;
   font-style: normal;
   font-variation-settings: "wdth" 100;
+
+  padding: 0;
+  margin: 0;
 }
 
 .hidden {
@@ -136,7 +140,8 @@ body {
   flex-flow: row wrap;
   align-items: center;
   font-size: 0.5rem;
-  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
   gap: 4px;
   padding: 4px;
 }
@@ -146,7 +151,8 @@ body {
   flex-flow: row wrap;
   align-items: center;
   font-size: 0.8rem;
-  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
   gap: 4px;
   padding: 4px;
 }
@@ -155,7 +161,8 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
   font-weight: bolder;
   font-style: bold;
   font-size: 1rem;
@@ -167,7 +174,8 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
   font-weight: 900;
   font-size: 2.5rem;
   font-style: bold;
@@ -661,8 +669,4 @@ label.origin-center {
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
-}
-
-#drop-area:active {
-  border-color: #ffd000;
 }
